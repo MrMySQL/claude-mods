@@ -1,0 +1,5 @@
+{
+  "name": "glamour-dark",
+  "version": "0.1.0",
+  "description": "Draws the model's text replies with charmbracelet/glamour's default dark style"
+}

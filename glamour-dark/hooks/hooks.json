@@ -1,0 +1,4 @@
+{
+  "description": "The glamour-dark hooks module",
+  "modules": ["./register.ts"]
+}
