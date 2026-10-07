@@ -26,8 +26,8 @@ function withBullet(lines: Line[], paint: Paint): Line[] {
   return [[{ text: BULLET, paint }, { ...lead, text: lead.text.slice(1) }, ...first.slice(1)], ...rest]
 }
 
-// glamour opens a document with a blank line, drawn as the row's top margin; its closing one is left out, since
-// the engine's next row opens with a blank line of its own.
+// glamour opens and closes a document with a blank line, drawn as the row's margins. The closing one lives here,
+// not in a wrapper of another plugin's, so it holds whichever plugin's hook runs first.
 const blankLines = (text = '') => text.split('\n').length - 1
 
 // MARK: Hooks
@@ -51,6 +51,7 @@ export const register: Register = on => {
     return Box({
       flexDirection: 'column',
       marginTop: blankLines(STYLE.document.block_prefix),
+      marginBottom: blankLines(STYLE.document.block_suffix),
       // An empty Text takes no height, so a blank line between blocks is drawn as one space.
       children: lines.map(line => Text({ children: line.length === 0 ? [' '] : line.map(drawSpan) })),
     })

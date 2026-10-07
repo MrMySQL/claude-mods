@@ -54,11 +54,11 @@ test('indents the reply by the document margin and opens it with the bullet', as
   expect(await rowsOf($, 'Hello there.')).toEqual(['  Hello there.'])
 })
 
-test('paints body text in the document color, with a blank line above, since the next row opens with its own', async $ => {
+test('paints body text in the document color, with a blank line above and below', async $ => {
   const root = await draw($, 'Hello there.')
   expect(spanWith(root, 'Hello')?.props.color).toBe('ansi256(252)')
   expect(root.props?.marginTop).toBe(1)
-  expect(root.props?.marginBottom).toBeUndefined()
+  expect(root.props?.marginBottom).toBe(1)
 })
 
 test('wraps to the viewport, leaving both margins clear', async $ => {
