@@ -5,6 +5,8 @@ import type { Register } from 'claude-code'
 // Wide terminals fit the whole line on one row; narrow ones may wrap, up to MAX_ROWS.
 const MIN_CHARS = 120
 const MAX_ROWS = 3
+// A long argument (a whole script or prompt) buries the tool name, so the subject stops here, ellipsis included.
+const MAX_SUBJECT_CHARS = 35
 // The engine indents transcript rows, so a line sized to the full width would spill onto a second row.
 const GUTTER = 4
 // The viewport is absent until the terminal has been measured.
@@ -36,6 +38,9 @@ const SUBJECT_KEYS = [
   'prompt',
 ]
 
+// This extracts the main argument of a tool call. Tools with no known key fall back to their raw
+// JSON so the line is never blank, and whitespace is collapsed so a multi-line command can't break
+// the line apart.
 function subjectOf(input: unknown): string {
   if (typeof input !== 'object' || input === null) return ''
   const fields = input as Record<string, unknown>
@@ -88,7 +93,8 @@ function lineFor(row: ToolRow, columns: number): ToolLine {
     .filter(note => note !== undefined)
     .join(', ')
   const frame = `tool_call: ${row.tool}()`.length + (meta === '' ? 0 : ` - ${meta}`.length)
-  return { tool: row.tool, subject: clip(subjectOf(row.input), budget - frame), meta }
+  const subjectWidth = Math.min(MAX_SUBJECT_CHARS, budget - frame)
+  return { tool: row.tool, subject: clip(subjectOf(row.input), subjectWidth), meta }
 }
 
 // MARK: Status
