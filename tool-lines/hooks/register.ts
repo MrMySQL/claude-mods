@@ -180,7 +180,9 @@ export const register: Register = on => {
     const isOpen = unfolded.has(e.props.tool_use_id)
     const toggle = Box({ minWidth: 2, flexShrink: 0, children: [pressable('toggle', isOpen ? '▾' : '▸', true)] })
     if (isOpen) {
-      const row = Box({ key: 'row', flexDirection: 'row', children: [toggle, Box({ flexGrow: 1, flexShrink: 1, children: [await next(e)] })] })
+      // The engine's row opens with a blank line, so the triangle steps down one to sit beside its ⏺.
+      const openToggle = Box({ minWidth: 2, flexShrink: 0, marginTop: 1, children: [pressable('toggle', '▾', true)] })
+      const row = Box({ key: 'row', flexDirection: 'row', children: [openToggle, Box({ flexGrow: 1, flexShrink: 1, children: [await next(e)] })] })
       if (hasResultBlock.has(e.props.tool_use_id)) return row
       const hide = hideOf(e.props.tool_use_id, Button, () => $.ui.invalidate('ui.render'))
       return Box({ flexDirection: 'column', children: [row, Box({ marginLeft: 4, children: [hide] })] })
